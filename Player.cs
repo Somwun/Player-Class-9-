@@ -47,6 +47,10 @@ namespace Player_Class__9_
         {
             return _location.Intersects(item);
         }
+        public bool Collide(Food item)
+        {
+            return _location.Intersects(item.Rectangle);
+        }
         public void Grow()
         {
             _location.Width += 10;

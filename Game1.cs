@@ -12,7 +12,8 @@ namespace Player_Class__9_
         KeyboardState keyboardState;
         Texture2D amoebaTexture, wallTexture, foodTexture;
         Player amoeba;
-        List<Rectangle> barriers, food;
+        List<Food> goodFood, badFood;
+        List<Rectangle> barriers;
         int speed;
         public Game1()
         {
@@ -24,6 +25,14 @@ namespace Player_Class__9_
         {
             base.Initialize();
             amoeba = new Player(amoebaTexture, 10, 10);
+            goodFood = new List<Food>();
+            goodFood.Add(new Food(foodTexture, 40, 50, Color.Green));
+            goodFood.Add(new Food(foodTexture, 200, 50, Color.Green));
+            goodFood.Add(new Food(foodTexture, 34, 75, Color.Green));
+            badFood = new List<Food>();
+            badFood.Add(new Food(foodTexture, 100, 20, Color.Red));
+            badFood.Add(new Food(foodTexture, 250, 100, Color.Red));
+            badFood.Add(new Food(foodTexture, 20, 85, Color.Red));
             amoeba.HorizontalSpeed = 0;
             amoeba.VerticalSpeed = 0;
             barriers = new List<Rectangle>();
@@ -33,10 +42,6 @@ namespace Player_Class__9_
             barriers.Add(new Rectangle(-1, -1, _graphics.PreferredBackBufferWidth, 1));
             barriers.Add(new Rectangle(-1, _graphics.PreferredBackBufferHeight + 1, _graphics.PreferredBackBufferWidth, 1));
             barriers.Add(new Rectangle(_graphics.PreferredBackBufferWidth + 1, -1, 1, _graphics.PreferredBackBufferHeight));
-            food = new List<Rectangle>();
-            food.Add(new Rectangle(30, 50, 10, 10));
-            food.Add(new Rectangle(600, 100, 10, 10));
-            food.Add(new Rectangle(30, 200, 10, 10));
             speed = 4;
         }
         protected override void LoadContent()
@@ -61,19 +66,31 @@ namespace Player_Class__9_
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
                 amoeba.VerticalSpeed -= speed;
             if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
-                amoeba.VerticalSpeed += speed;          
+                amoeba.VerticalSpeed += speed;
+
             //Objects
-            for (int i = 0; i < food.Count; i++)
-                if (amoeba.Collide(food[i]))
-                {
-                    food.RemoveAt(i);
-                    i--;
-                    amoeba.Grow();
-                }
             amoeba.Move();
             foreach (Rectangle barrier in barriers)
                 if (amoeba.Collide(barrier))
                     amoeba.UndoMove();
+            for (int i = 0; i < goodFood.Count; i++)
+            {
+                goodFood[i].Move(barriers);
+                goodFood[i].Bounce(_graphics);
+                if (amoeba.Collide(goodFood[i]))
+                {
+                    goodFood.RemoveAt(i);
+                    amoeba.Grow();
+                    i--;
+                }
+            }
+            for (int i = 0; i < badFood.Count; i++)
+            {
+                badFood[i].Move(barriers);
+                badFood[i].Bounce(_graphics);
+                if (amoeba.Collide(badFood[i]))
+                    Exit();
+            }
             base.Update(gameTime);
         }
         protected override void Draw(GameTime gameTime)
@@ -81,10 +98,12 @@ namespace Player_Class__9_
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
             amoeba.Draw(_spriteBatch);
+            foreach (Food item in goodFood)
+                item.Draw(_spriteBatch);
+            foreach (Food item in badFood)
+                item.Draw(_spriteBatch);
             foreach (Rectangle barrier in barriers)
                 _spriteBatch.Draw(wallTexture, barrier, Color.White);
-            foreach (Rectangle bit in food)
-                _spriteBatch.Draw(foodTexture, bit, Color.Green);
             _spriteBatch.End();
             base.Draw(gameTime);
         }
