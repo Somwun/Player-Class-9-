@@ -14,7 +14,8 @@ namespace Player_Class__9_
         Player amoeba;
         List<Food> goodFood, badFood;
         List<Rectangle> barriers;
-        int speed;
+        SpriteFont points;
+        int speed, pointCount;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -43,6 +44,7 @@ namespace Player_Class__9_
             barriers.Add(new Rectangle(-1, _graphics.PreferredBackBufferHeight + 1, _graphics.PreferredBackBufferWidth, 1));
             barriers.Add(new Rectangle(_graphics.PreferredBackBufferWidth + 1, -1, 1, _graphics.PreferredBackBufferHeight));
             speed = 4;
+            pointCount = 0;
         }
         protected override void LoadContent()
         {
@@ -50,6 +52,7 @@ namespace Player_Class__9_
             amoebaTexture = Content.Load<Texture2D>("amoeba");
             wallTexture = Content.Load<Texture2D>("rectangle");
             foodTexture = Content.Load<Texture2D>("circle");
+            points = Content.Load<SpriteFont>("Points");
         }
         protected override void Update(GameTime gameTime)
         {
@@ -82,8 +85,11 @@ namespace Player_Class__9_
                     goodFood.RemoveAt(i);
                     amoeba.Grow();
                     i--;
+                    pointCount++;
                 }
             }
+            if (goodFood.Count == 0)
+                Exit();
             for (int i = 0; i < badFood.Count; i++)
             {
                 badFood[i].Move(barriers);
@@ -104,6 +110,7 @@ namespace Player_Class__9_
                 item.Draw(_spriteBatch);
             foreach (Rectangle barrier in barriers)
                 _spriteBatch.Draw(wallTexture, barrier, Color.White);
+            _spriteBatch.DrawString(points, pointCount.ToString(), new Vector2(10, 10), Color.Black);
             _spriteBatch.End();
             base.Draw(gameTime);
         }
