@@ -12,7 +12,6 @@ namespace Player_Class__9_
         KeyboardState keyboardState;
         Texture2D amoebaTexture, wallTexture, foodTexture;
         Player amoeba;
-        Rectangle amoebaRect;
         List<Rectangle> barriers, food;
         int speed;
         public Game1()
@@ -27,14 +26,17 @@ namespace Player_Class__9_
             amoeba = new Player(amoebaTexture, 10, 10);
             amoeba.HorizontalSpeed = 0;
             amoeba.VerticalSpeed = 0;
-            amoebaRect = new Rectangle(10, 10, 100, 100);
             barriers = new List<Rectangle>();
             barriers.Add(new Rectangle(100, 100, 10, 200));
             barriers.Add(new Rectangle(400, 400, 100, 10));
+            barriers.Add(new Rectangle(-1, -1, 1, _graphics.PreferredBackBufferHeight + 1));
+            barriers.Add(new Rectangle(-1, -1, _graphics.PreferredBackBufferWidth, 1));
+            barriers.Add(new Rectangle(-1, _graphics.PreferredBackBufferHeight + 1, _graphics.PreferredBackBufferWidth, 1));
+            barriers.Add(new Rectangle(_graphics.PreferredBackBufferWidth + 1, -1, 1, _graphics.PreferredBackBufferHeight));
             food = new List<Rectangle>();
-            food.Add(new Rectangle(50, 50, 10, 10));
+            food.Add(new Rectangle(30, 50, 10, 10));
             food.Add(new Rectangle(600, 100, 10, 10));
-            food.Add(new Rectangle(50, 200, 10, 10));
+            food.Add(new Rectangle(30, 200, 10, 10));
             speed = 4;
         }
         protected override void LoadContent()
@@ -58,7 +60,7 @@ namespace Player_Class__9_
                 amoeba.HorizontalSpeed -= speed;
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
                 amoeba.VerticalSpeed -= speed;
-            else if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
+            if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
                 amoeba.VerticalSpeed += speed;          
             //Objects
             for (int i = 0; i < food.Count; i++)
