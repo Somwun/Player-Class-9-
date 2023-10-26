@@ -29,7 +29,7 @@ namespace Player_Class__9_
             get { return _speed.Y; }
             set { _speed.Y = value; }
         }
-        private void Move()
+        public void Move()
         {
             _location.X += (int)_speed.X;
             _location.Y += (int)_speed.Y;
@@ -38,10 +38,6 @@ namespace Player_Class__9_
         {
             _location.X -= (int)_speed.X;
             _location.Y -= (int)_speed.Y;
-        }
-        public void Update()
-        {
-            Move();
         }
         public void Draw(SpriteBatch spriteBatch)
         {

@@ -68,7 +68,7 @@ namespace Player_Class__9_
                     i--;
                     amoeba.Grow();
                 }
-            amoeba.Update();
+            amoeba.Move();
             foreach (Rectangle barrier in barriers)
                 if (amoeba.Collide(barrier))
                     amoeba.UndoMove();
@@ -78,7 +78,6 @@ namespace Player_Class__9_
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
-
             amoeba.Draw(_spriteBatch);
             foreach (Rectangle barrier in barriers)
                 _spriteBatch.Draw(wallTexture, barrier, Color.White);
